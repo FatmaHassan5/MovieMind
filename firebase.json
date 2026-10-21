@@ -1,0 +1,26 @@
+
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "moviemind-a7049",
+          "appId": "1:830834328253:android:0806234a69efdff6e42dd4",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "moviemind-a7049",
+          "configurations": {
+            "android": "1:830834328253:android:0806234a69efdff6e42dd4",
+            "ios": "1:830834328253:ios:b3b76c2a87439a86e42dd4",
+            "macos": "1:830834328253:ios:b3b76c2a87439a86e42dd4",
+            "web": "1:830834328253:web:089085d82ed53009e42dd4",
+            "windows": "1:830834328253:web:754fcccde0d788d3e42dd4"
+          }
+        }
+      }
+    }
+  }
+}
