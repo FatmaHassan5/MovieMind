@@ -51,3 +51,4 @@ env.json
 !.env.example
 # Generated build files
 /android/build/
+/android/app/google-services.json
