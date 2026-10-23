@@ -1,9 +1,10 @@
+
 import 'package:flutter/material.dart';
 
 import '../../../core/app_colors.dart';
 import '../../../core/app_theme.dart';
 
-/// "Results · 24 found" + قائمة ترتيب منسدلة (Top Rated / Newest / A-Z).
+/// "Results · 24 found" + قائمة ترتيب منسدلة.
 class ResultsHeader extends StatelessWidget {
   const ResultsHeader({
     super.key,
@@ -16,7 +17,7 @@ class ResultsHeader extends StatelessWidget {
   final String sortBy;
   final ValueChanged<String> onSortChanged;
 
-  static const _options = ['Top Rated', 'Newest', 'A-Z'];
+  static const sortOptions = ['Relevance', 'Top Rated', 'Newest', 'A-Z'];
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +42,7 @@ class ResultsHeader extends StatelessWidget {
         PopupMenuButton<String>(
           color: AppColors.surfaceHigh,
           onSelected: onSortChanged,
-          itemBuilder: (_) => _options
+          itemBuilder: (_) => sortOptions
               .map((o) => PopupMenuItem(value: o, child: Text(o, style: AppText.body(13))))
               .toList(),
           child: Row(

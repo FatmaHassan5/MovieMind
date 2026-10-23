@@ -1,18 +1,27 @@
+
+
 import 'package:flutter/material.dart';
 
 import '../../../core/app_colors.dart';
 import '../../../core/app_theme.dart';
 
-/// شريط إدخال الرسائل السفلي الثابت في شاشة المحادثة.
+/// شريط إدخال الرسائل السفلي الثابت. لما [enabled] = false (الـ AI بيرد)
+/// زر الإرسال بيتعطّل والنص بيفضل مكتوب.
 class ChatInputBar extends StatelessWidget {
-  const ChatInputBar({super.key, required this.controller, required this.onSend});
+  const ChatInputBar({
+    super.key,
+    required this.controller,
+    required this.onSend,
+    this.enabled = true,
+  });
 
   final TextEditingController controller;
   final ValueChanged<String> onSend;
+  final bool enabled;
 
   void _submit() {
     final text = controller.text.trim();
-    if (text.isEmpty) return;
+    if (!enabled || text.isEmpty) return;
     onSend(text);
     controller.clear();
   }
@@ -38,6 +47,7 @@ class ChatInputBar extends StatelessWidget {
                 child: TextField(
                   controller: controller,
                   onSubmitted: (_) => _submit(),
+                  textInputAction: TextInputAction.send,
                   style: AppText.body(13.5, color: AppColors.text),
                   cursorColor: AppColors.primary,
                   decoration: InputDecoration(
@@ -58,13 +68,17 @@ class ChatInputBar extends StatelessWidget {
               const SizedBox(width: 10),
               GestureDetector(
                 onTap: _submit,
-                child: Container(
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 150),
                   width: 38,
                   height: 38,
-                  decoration: const BoxDecoration(
-                      color: AppColors.primary, shape: BoxShape.circle),
-                  child: const Icon(Icons.arrow_upward_rounded,
-                      size: 18, color: AppColors.onPrimary),
+                  decoration: BoxDecoration(
+                    color: enabled ? AppColors.primary : AppColors.surfaceHigh,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(Icons.arrow_upward_rounded,
+                      size: 18,
+                      color: enabled ? AppColors.onPrimary : AppColors.textDim),
                 ),
               ),
             ],

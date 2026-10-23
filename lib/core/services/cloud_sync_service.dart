@@ -1,9 +1,13 @@
+
+
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
+import '../data/movie_catalog.dart';
+import '../models/movie.dart';
 import '../state/reminder_controller.dart';
 import '../state/user_controller.dart';
 import '../state/watchlist_controller.dart';
@@ -137,6 +141,12 @@ class CloudSyncService {
         'releaseReminders': u.releaseReminders.value,
         'aiPersonalization': u.aiPersonalization.value,
         'watchlist': List<String>.from(w.ids.value),
+        // نسخة مضغوطة من كل فيلم محفوظ/مشاهَد عشان يتعرض بعد إعادة فتح التطبيق.
+        'movies': {...w.ids.value, ...w.watchedIds.value}
+            .map(MovieCatalog.byId)
+            .whereType<Movie>()
+            .map((m) => m.toMap())
+            .toList(),
         'watched': w.watchedIds.value.toList(),
         'reminders': ReminderController.instance.ids.value.toList(),
         'updatedAt': FieldValue.serverTimestamp(),
@@ -176,9 +186,17 @@ class CloudSyncService {
     u.pushNotifications.value = data['pushNotifications'] as bool? ?? true;
     u.releaseReminders.value = data['releaseReminders'] as bool? ?? true;
     u.aiPersonalization.value = data['aiPersonalization'] as bool? ?? true;
+    final snapshots = data['movies'];
+    if (snapshots is List) {
+      MovieCatalog.register(snapshots
+          .whereType<Map>()
+          .map((m) => Movie.fromMap(Map<String, dynamic>.from(m)))
+          .whereType<Movie>());
+    }
+    bool known(String id) => MovieCatalog.byId(id) != null;
     WatchlistController.instance.setAll(
-      saved: _stringList(data['watchlist']),
-      watched: _stringList(data['watched']).toSet(),
+      saved: _stringList(data['watchlist']).where(known).toList(),
+      watched: _stringList(data['watched']).where(known).toSet(),
     );
     ReminderController.instance.setAll(_stringList(data['reminders']).toSet());
   }
